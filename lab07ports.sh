@@ -6,9 +6,9 @@ check_port() {
     echo "Checking port $port..."
 
     # Check if the port is open using netstat
-    if netstat -tuln | grep -q ":$port "; then
+    if nmap -p $port 127.0.0.1 > /dev/null 2>&1; then
         # Get the service name associated with the port
-        service_name=$(lsof -i :$port | awk 'NR==2 {print $1}')
+        service_name=$(nmap -p $port 127.0.0.1 -oG - | grep "Ports")
         echo "Port $port is open."
         if [ -n "$service_name" ]; then
             echo "Service running on port $port: $service_name"
